@@ -1,0 +1,130 @@
+---
+title: "Mozambique Maps"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+  output_dir: docs
+baseurl: "/wb-climate-pilots-mozambique"
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(dplyr)
+library(sf)
+library(leaflet)
+library(ggplot2)
+```
+
+
+```{r}
+# Run scripts which cleans data and creates plotting functions
+setwd("C:/Users/young/OneDrive/Escritorio/wb-climate-pilots-mozambique/scripts")
+source("2_firm_data_clean.R")
+
+#setwd("C:/Users/young/OneDrive/Escritorio/wb-climate-pilots-turkiye/scripts")
+#source("3_climate_data_clean.R")
+```
+
+
+Location
+=======================================================================
+
+Column {.tabset .tabset-fade data-width=500}
+-----------------------------------------------------------------------
+
+### Firm location
+
+```{r}
+leaflet(firms) %>%
+  
+  addTiles() %>% 
+  
+  # Change map tiles so that locations shown in English
+  addProviderTiles(providers$OpenStreetMap.DE) %>% 
+  
+  addAwesomeMarkers(lng = ~lon_coord, lat = ~lat_coord,
+                    popup = ~paste("Region: ", a2x, "<br>",
+                                   "Sector: ", stra_sector, "<br>",
+                                   "Size: ", size
+                    ))
+```
+
+### Number of firms in each grid
+
+```{r}
+heatplot(sf_firm_count, NULL, NULL)
+```
+
+Column {.tabset .tabset-fade data-width=500}
+-----------------------------------------------------------------------
+
+Size
+=======================================================================
+
+Column {.tabset .tabset-fade data-width=500}
+-----------------------------------------------------------------------
+
+### Average "size" (1-3 classification)
+
+```{r}
+heatplot(sf_avgsize, NULL, NULL)
+```
+
+### Average sales in 2017 (winsorized 1%)
+
+```{r}
+heatplot(sf_avgsales, NULL, NULL)
+```
+
+
+Column {.tabset .tabset-fade data-width=500}
+-----------------------------------------------------------------------
+
+Sectors
+=======================================================================
+
+Column {.tabset .tabset-fade data-width=500}
+-----------------------------------------------------------------------
+
+### Other Manufacturing
+
+```{r}
+legend_title = "Firms"
+
+heatplot(sector_count("Other Manufacturing"), NULL, legend_title)
+```
+
+### Metals, Machinery, Computer & Electronics
+
+```{r}
+heatplot(sector_count("Metals, Machinery, Computer & Electronics"), NULL, legend_title)
+```
+
+### Other Services
+
+```{r}
+heatplot(sector_count("Other Services"), NULL, legend_title)
+```
+
+### Hospitality & Tourism
+
+```{r}
+heatplot(sector_count("Hospitality & Tourism"), NULL, legend_title)
+```
+
+### Food
+
+```{r}
+heatplot(sector_count("Food"), NULL, legend_title)
+```
+
+### Retail
+
+```{r}
+heatplot(sector_count("Retail"), NULL, legend_title)
+```
+
+
+Column {.tabset .tabset-fade data-width=500}
+-----------------------------------------------------------------------
